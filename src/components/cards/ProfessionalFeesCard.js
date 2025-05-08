@@ -1,78 +1,97 @@
+import React, { useState } from 'react';
+import { Box, Typography, Button, TextField,Card,CardContent } from '@mui/material';
+  
+import CustomNumericField from '../CustomNumericField';
 
-import React from 'react';
-import { Card, CardContent, Typography, Grid, TextField, IconButton } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
+const ProfessionalFeesCard = () => {
+  const [categories, setCategories] = useState([
+    { id: 1, name: 'Legal', Cost: 0 },
+   
+  ]);
+  const [newCategory, setNewCategory] = useState('');
 
-const ProfessionalFeesCard = ({ year, yearData, feeTypes, onUpdateFeeType, onAddFeeType, onRemoveFeeType }) => {
-  const handleInput = (field) => (e) => {
-    onUpdateFeeType(year, field, e.target.value);
+  const handleChange = (id, field, value) => {
+    setCategories(prev =>
+      prev.map(cat => (cat.id === id ? { ...cat, [field]: value } : cat))
+    );
   };
 
+  const handleRemove = (id) => {
+    setCategories(prev => prev.filter(cat => cat.id !== id));
+  };
+
+  const handleAddCategory = () => {
+    const name = newCategory.trim();
+    if (name) {
+      setCategories(prev => [
+        ...prev,
+        { id: Date.now(), name, sqm: 0, costPerSqm: 0 },
+      ]);
+      setNewCategory('');
+    }
+  };
+
+  const total = categories.reduce((sum, cat) => sum + cat.Cost, 0).toFixed(2);
+
   return (
-    <Card sx={{ mb: 3 }}>
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
-          Professional Fees Breakdown
-        </Typography>
+   <Card className="marketing-card">
+         <CardContent>
+    <Box mt={4}>
+      <Typography variant="h6" gutterBottom>Professional Fees Breakdown</Typography>
 
-        {feeTypes.length > 0 && (
-          <Grid container spacing={2} alignItems="center">
-            <Grid item xs={4}><strong>Fee Type</strong></Grid>
-            <Grid item xs={4}><strong>Cost ($)</strong></Grid>
-            <Grid item xs={4}><strong>Action</strong></Grid>
-          </Grid>
-        )}
+      {/* Table Headers */}
+      <Box display="flex" fontWeight="bold" mb={1}>
+        <Box width="30%">Fee Type</Box>
+        <Box width="30%">Cost ($)</Box>
+        
+      </Box>
 
-        {feeTypes.map((fee, i) => (
-          <Grid container spacing={2} alignItems="center" key={i} sx={{ mt: 1 }}>
-            <Grid item xs={4}>
-              <TextField
-                fullWidth
-                value={fee.name}
-                onChange={(e) => onUpdateFeeType(year, i, 'name', e.target.value)}
-                label="Fee Type"
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                fullWidth
-                type="number"
-                label="Cost ($)"
-                value={yearData[`${fee.name} Cost`] || ''}
-                onChange={handleInput(`${fee.name} Cost`)}
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <IconButton onClick={() => onRemoveFeeType(year, i)}>
-                <DeleteIcon />
-              </IconButton>
-            </Grid>
-          </Grid>
-        ))}
-
-        <Grid container spacing={2} sx={{ mt: 2 }}>
-          <Grid item xs={8}>
-            <TextField
-              fullWidth
-              label="New Fee Type"
-              value={yearData.newFeeType || ''}
-              onChange={(e) => onUpdateFeeType(year, 'newFeeType', e.target.value)}
+      {/* Rent Rows */}
+      {categories.map(({ id, name,Cost }) => (
+        <Box key={id} display="flex" alignItems="center" gap={1} mb={1}>
+          <Box width="30%">
+            <Typography variant="body2" sx={{ pt: 1 }}>{name}</Typography>
+          </Box>
+          <Box width="30%">
+            <CustomNumericField
+              value={Cost}
+              onChange={(val) => handleChange(id, 'sqm', val)}
+              step={1}
             />
-          </Grid>
-          <Grid item xs={4}>
-            <button onClick={() => onAddFeeType(year)} style={{ padding: '8px 16px', cursor: 'pointer' }}>Add Fee</button>
-          </Grid>
-        </Grid>
+          </Box>
+          
+          <Button onClick={() => handleRemove(id)} variant="outlined" size="small" color="error">
+            Remove
+          </Button>
+        </Box>
+      ))}
 
+      {/* Add New Rent Category */}
+      <Box display="flex" alignItems="center" gap={2} mt={2}>
         <TextField
-          fullWidth
-          label="Professional Fees (Total) ($)"
-          type="number"
-          value={yearData['Professional Fees'] || ''}
-          onChange={handleInput('Professional Fees')}
-          sx={{ mt: 3 }}
+          variant="outlined"
+          size="small"
+          placeholder="Add New Fee Type"
+          value={newCategory}
+          onChange={(e) => setNewCategory(e.target.value)}
+          sx={{ width: '250px', background: '#ffffff', input: { color: '#000000' } }}
         />
-      </CardContent>
+        <Button variant="contained" size="small" onClick={handleAddCategory}>
+        Add New Fee Type
+        </Button>
+      </Box>
+
+      {/* Total Office Rent */}
+      <Box mt={3} width="50%">
+        <CustomNumericField
+          label="Professional Fees (Total) ($)"
+          value={parseFloat(total)}
+          onChange={() => {}}
+          disabled
+        />
+      </Box>
+    </Box>
+    </CardContent>
     </Card>
   );
 };

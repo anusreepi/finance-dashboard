@@ -1,3 +1,4 @@
+// CustomNumericField.jsx
 import React from 'react';
 import {
   TextField,
@@ -9,7 +10,16 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 
-const CustomNumericField = ({ label, value, onChange, step = 1, disabled = false }) => {
+const CustomNumericField = ({
+  label,
+  value,
+  onChange,
+  step = 1,
+  disabled = false,
+  width = '100%', 
+  height = '32px',      // ← default
+  sx,                   // allow extra styling
+}) => {
   const handleIncrease = () => {
     if (!disabled) onChange(typeof value === 'number' ? value + step : step);
   };
@@ -18,7 +28,7 @@ const CustomNumericField = ({ label, value, onChange, step = 1, disabled = false
   };
 
   return (
-    <Box mb={1}>
+    <Box mb={1} sx={{ width, ...sx }}>
       {label && (
         <Typography
           variant="body2"
@@ -36,10 +46,10 @@ const CustomNumericField = ({ label, value, onChange, step = 1, disabled = false
           const val = parseFloat(e.target.value);
           onChange(isNaN(val) ? '' : val);
         }}
-        fullWidth
         variant="outlined"
         size="small"
         disabled={disabled}
+        fullWidth            // will fill the Box’s width
         InputProps={{
           inputProps: {
             step,
@@ -47,6 +57,7 @@ const CustomNumericField = ({ label, value, onChange, step = 1, disabled = false
               MozAppearance: 'textfield',
               padding: '6px 8px',
               fontSize: '0.75rem',
+              height,
             },
           },
           endAdornment: !disabled && (
@@ -69,7 +80,7 @@ const CustomNumericField = ({ label, value, onChange, step = 1, disabled = false
             MozAppearance: 'textfield',
           },
           '& .MuiInputBase-root': {
-            height: '32px',
+            
             fontSize: '0.75rem',
           },
         }}

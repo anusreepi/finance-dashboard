@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Box, Typography, Button, TextField } from '@mui/material';
+import { Box, Typography, Button, TextField ,Card,CardContent} from '@mui/material';
+  
 import CustomNumericField from '../CustomNumericField';
 
 const OfficeRentBreakdownCard = () => {
@@ -33,6 +34,8 @@ const OfficeRentBreakdownCard = () => {
   const total = categories.reduce((sum, cat) => sum + cat.sqm * cat.costPerSqm, 0).toFixed(2);
 
   return (
+    <Card className="marketing-card">
+      <CardContent>
     <Box mt={4}>
       <Typography variant="h6" gutterBottom>Office Rent Breakdown</Typography>
 
@@ -94,6 +97,8 @@ const OfficeRentBreakdownCard = () => {
         />
       </Box>
     </Box>
+    </CardContent>
+    </Card>
   );
 };
 
