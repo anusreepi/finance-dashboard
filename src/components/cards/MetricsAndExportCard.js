@@ -11,11 +11,8 @@ import { DataGrid } from '@mui/x-data-grid';
 import DownloadIcon from '@mui/icons-material/Download';
 
 export default function MetricsAndExportCard() {
-  // dummy operational metrics
   const [opRows, setOpRows] = useState([]);
-  // dummy customer table
   const [custRows, setCustRows] = useState([]);
-  // dummy IRR
   const [irr, setIrr] = useState(0);
 
   useEffect(() => {
@@ -39,7 +36,7 @@ export default function MetricsAndExportCard() {
       }))
     );
 
-    // dummy IRR
+    
     setIrr(50.45);
   }, []);
 

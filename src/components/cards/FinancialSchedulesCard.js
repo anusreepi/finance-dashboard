@@ -11,14 +11,14 @@ import {
 import { DataGrid } from '@mui/x-data-grid';
 import DownloadIcon from '@mui/icons-material/Download';
 
-// 1) The schedules you support:
+
 const SCHEDULE_OPTIONS = [
   'Income Statement',
   'Balance Sheet',
   'Cash Flow Statement',
 ];
 
-// 2) Dummy rows keyed by schedule name:
+
 const DUMMY_DATA = {
   'Income Statement': {
     columns: [
@@ -79,8 +79,7 @@ export default function FinancialSchedulesCard() {
   const [rows, setRows] = useState([]);
 
   useEffect(() => {
-    // whenever selection changes, we just show the first selected schedule
-    // (feel free to render them all in a loop if you like)
+   
     const key = selected[0];
     if (key && DUMMY_DATA[key]) {
       setColumns(DUMMY_DATA[key].columns);

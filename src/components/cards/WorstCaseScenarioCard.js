@@ -10,15 +10,12 @@ import SidebarSlider from '../SidebarSlider';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
-const WorstCaseScenarioCard = ({ data, onChange }) => {
+export default function WorstCaseScenarioCard({ data, onChange }) {
   const [expanded, setExpanded] = useState(false);
-
-  const toggleExpand = () => {
-    setExpanded((prev) => !prev);
-  };
+  const toggleExpand = () => setExpanded(prev => !prev);
 
   return (
-    <Card className="marketing-card" sx={{ mb: 3 }}>
+    <Card sx={{ mb: 3 }}>
       <CardContent>
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
           <Typography variant="h6">Worst Case Scenario Parameters</Typography>
@@ -34,7 +31,7 @@ const WorstCaseScenarioCard = ({ data, onChange }) => {
               <SidebarSlider
                 label="Conversion Rate Multiplier"
                 value={data.conversionRateMultiplier}
-                setValue={(val) => onChange('conversionRateMultiplier', val)}
+                setValue={val => onChange('conversionRateMultiplier', val)}
                 min={0.5}
                 max={1}
                 step={0.01}
@@ -42,69 +39,62 @@ const WorstCaseScenarioCard = ({ data, onChange }) => {
               <SidebarSlider
                 label="Average Order Value Multiplier"
                 value={data.averageOrderValueMultiplier}
-                setValue={(val) => onChange('averageOrderValueMultiplier', val)}
+                setValue={val => onChange('averageOrderValueMultiplier', val)}
                 min={0.5}
                 max={1}
                 step={0.01}
               />
               <SidebarSlider
-                label="Political Risk (1–5)"
-                value={data.politicalRisk}
-                setValue={(val) => onChange('politicalRisk', val)}
-                min={1}
-                max={5}
-                step={1}
+                label="Cost Inflation Rate (%)"
+                value={data.costInflationRate}
+                setValue={val => onChange('costInflationRate', val)}
+                min={0}
+                max={15}
+                step={0.1}
               />
               <SidebarSlider
-                label="Environmental Impact (1–5)"
-                value={data.environmentalImpact}
-                setValue={(val) => onChange('environmentalImpact', val)}
-                min={1}
-                max={5}
-                step={1}
+                label="Interest Rate (%)"
+                value={data.interestRate}
+                setValue={val => onChange('interestRate', val)}
+                min={0}
+                max={25}
+                step={0.1}
               />
+             
             </Box>
 
             {/* Right Column */}
             <Box width="48%">
               <SidebarSlider
-                label="COGS Increase (%)"
-                value={data.cogsIncrease}
-                setValue={(val) => onChange('cogsIncrease', val)}
+                label="Volume Growth Multiplier"
+                value={data.volumeGrowthMultiplier}
+                setValue={val => onChange('volumeGrowthMultiplier', val)}
+                min={0.5}
+                max={1}
+                step={0.01}
+              />
+              <SidebarSlider
+                label="COGS Increase Multiplier"
+                value={data.cogsIncreaseMultiplier}
+                setValue={val => onChange('cogsIncreaseMultiplier', val)}
                 min={1}
                 max={1.2}
                 step={0.01}
               />
               <SidebarSlider
-                label="Interest Cost Increase"
-                value={data.interestCostIncrease}
-                setValue={(val) => onChange('interestCostIncrease', val)}
+                label="Working-Capital Days Increase"
+                value={data.workingCapitalDaysIncrease}
+                setValue={val => onChange('workingCapitalDaysIncrease', val)}
                 min={1}
-                max={1.5}
+                max={2}
                 step={0.01}
               />
-              <SidebarSlider
-                label="Labor Cost Increase"
-                value={data.laborCostIncrease}
-                setValue={(val) => onChange('laborCostIncrease', val)}
-                min={1}
-                max={1.5}
-                step={0.01}
-              />
-              <SidebarSlider
-                label="Material Cost Increase"
-                value={data.materialCostIncrease}
-                setValue={(val) => onChange('materialCostIncrease', val)}
-                min={1}
-                max={1.5}
-                step={0.01}
-              />
-              <SidebarSlider
-                label="Markdown Adjustment"
-                value={data.markdownAdjustment}
-                setValue={(val) => onChange('markdownAdjustment', val)}
-                min={1}
-                max={1.2}
+               <SidebarSlider
+                label="Selling-Price Multiplier"
+                value={data.sellingPriceMultiplier}
+                setValue={val => onChange('sellingPriceMultiplier', val)}
+                min={0.5}
+                max={1}
                 step={0.01}
               />
             </Box>
@@ -113,6 +103,4 @@ const WorstCaseScenarioCard = ({ data, onChange }) => {
       </CardContent>
     </Card>
   );
-};
-
-export default WorstCaseScenarioCard;
+}

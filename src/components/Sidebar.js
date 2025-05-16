@@ -1,23 +1,20 @@
-// components/Sidebar.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Drawer,
   IconButton,
   Typography,
-  Divider,
   Box,
   Collapse,
-  Select,
-  MenuItem,
-  Radio,
   RadioGroup,
   FormControlLabel,
+  Radio,
   Input,
-  Slider
+  Select,
+  MenuItem
 } from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import SidebarSlider from './SidebarSlider';
+import ArrowForwardIosIcon  from '@mui/icons-material/ArrowForwardIos';
+import SidebarSlider        from './SidebarSlider';
 import '../css/Sidebar.css';
 
 const Sidebar = ({
@@ -27,30 +24,48 @@ const Sidebar = ({
   taxRate, setTaxRate,
   inflationRate, setInflationRate,
   laborRateIncrease, setLaborRateIncrease,
-  analysisPeriod, setAnalysisPeriod
+  analysisPeriod, setAnalysisPeriod,
+  onLoadExisting,
+  onStartNew,
+  selectedFileName,
+  onUploadFile
 }) => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed]     = useState(false);
   const [existingChecked, setExistingChecked] = useState(false);
-  const [newChecked, setNewChecked] = useState(false);
+  const [newChecked, setNewChecked]   = useState(false);
   const [fileChecked, setFileChecked] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
-
-  const toggleSidebar = () => setCollapsed(!collapsed);
-   
+  const [startYear, setStartYear]     = useState(2025);
+  const [scenario, setScenario] = useState('Base Case');
+  const toggleSidebar = () => setCollapsed(c => !c);
 
   const sliders = [
     { label: 'Discount Rate (%)', value: discountRate, setValue: setDiscountRate, max: 30 },
-    { label: 'WACC (%)', value: wacc, setValue: setWacc, max: 20 },
-    { label: 'Perpetual Growth Rate (%)', value: growthRate, setValue: setGrowthRate, max: 5 },
-    { label: 'Tax Rate (%)', value: taxRate, setValue: setTaxRate, max: 50 },
+    { label: 'WACC (%)',           value: wacc,         setValue: setWacc,       max: 20 },
+    { label: 'Growth Rate (%)',    value: growthRate,   setValue: setGrowthRate, max: 10 },
+    { label: 'Tax Rate (%)',       value: taxRate,      setValue: setTaxRate,    max: 50 },
     { label: 'Inflation Rate (%)', value: inflationRate, setValue: setInflationRate, max: 10 },
-    { label: 'Direct Labor Rate Increase (%)', value: laborRateIncrease, setValue: setLaborRateIncrease, max: 20 }
+    { label: 'Labor Increase (%)', value: laborRateIncrease, setValue: setLaborRateIncrease, max: 20 },
   ];
 
-  const handleFileChange = (e) => {
-    if (e.target.files.length > 0) {
-      setSelectedFile(e.target.files[0].name);
+  useEffect(() => {
+    if (existingChecked) onLoadExisting();
+  }, [existingChecked]);
+
+  useEffect(() => {
+    if (newChecked) onStartNew(startYear);
+  }, [newChecked, startYear]);
+  
+  useEffect(() => {
+    if (selectedFileName) {
+      setFileChecked(true);
+      setExistingChecked(false);
+      setNewChecked(false);
     }
+  }, [selectedFileName]);
+  const handleFileChange = e => {
+    if (!e.target.files.length) return;
+    const file = e.target.files[0];
+    onUploadFile(file);
   };
 
   return (
@@ -58,70 +73,90 @@ const Sidebar = ({
       variant="permanent"
       sx={{
         width: collapsed ? 60 : 320,
-        flexShrink: 0,
         '& .MuiDrawer-paper': {
           width: collapsed ? 60 : 320,
-          boxSizing: 'border-box',
           transition: 'width 0.3s',
         },
       }}
     >
-      <Box p={2} display="flex" justifyContent="space-between" alignItems="center" className="box-icon">
-        {!collapsed && <Typography variant="h6"></Typography>}
+      <Box p={2} display="flex" justifyContent="space-between" alignItems="center">
+        {!collapsed && <Typography variant="h6">Pharma Dashboard</Typography>}
         <IconButton onClick={toggleSidebar} size="small">
-          {collapsed ? <ArrowForwardIosIcon fontSize="small" /> : <ArrowBackIosNewIcon fontSize="small" />}
+          {collapsed
+            ? <ArrowForwardIosIcon fontSize="small" />
+            : <ArrowBackIosNewIcon  fontSize="small" />}
         </IconButton>
       </Box>
-      
 
       <Collapse in={!collapsed}>
-        <Box p={2} className="sidebar-content">
-          <Typography variant="subtitle2" gutterBottom>File Management</Typography>
+        <Box p={2}>
+          <Typography variant="subtitle2">File Management</Typography>
           <RadioGroup>
             <FormControlLabel
-              control={<Radio checked={existingChecked} onChange={(e) => setExistingChecked(e.target.checked)} />}
+              control={<Radio checked={existingChecked} onChange={() => { setExistingChecked(true); setNewChecked(false); setFileChecked(false); }} />}
               label="Load Existing"
             />
             <FormControlLabel
-              control={<Radio checked={newChecked} onChange={(e) => setNewChecked(e.target.checked)} />}
+              control={<Radio checked={newChecked} onChange={() => { setExistingChecked(false); setNewChecked(true); setFileChecked(false); }} />}
               label="Start New"
             />
             <FormControlLabel
-              control={<Radio checked={fileChecked} onChange={(e) => setFileChecked(e.target.checked)} />}
+              control={<Radio checked={fileChecked} onChange={() => { setExistingChecked(false); setNewChecked(false); setFileChecked(true); }} />}
               label="Select a File"
             />
           </RadioGroup>
 
+          {newChecked && (
+            <Box my={1}>
+              <Typography>Starting Year</Typography>
+              <Input
+                type="number"
+                value={startYear}
+                onChange={e => setStartYear(+e.target.value)}
+                fullWidth
+              />
+            </Box>
+          )}
+
           {fileChecked && (
             <Box mt={1}>
-              <Input type="file" onChange={handleFileChange} fullWidth size="small" />
-              {selectedFile && (
-                <Typography variant="caption" display="block" mt={1}>Selected: {selectedFile}</Typography>
+              <Input
+                type="file"
+                onChange={handleFileChange}
+                fullWidth
+              />
+              {selectedFileName && (
+                <Typography variant="caption" mt={1} display="block">
+                  Loaded: {selectedFileName}
+                </Typography>
               )}
             </Box>
           )}
 
           <Typography variant="subtitle2" mt={3}>Analysis Settings</Typography>
-          {sliders.map((s, i) => (
-            <SidebarSlider key={i} {...s} />
-          ))}
+          {sliders.map((s,i) => <SidebarSlider key={i} {...s} />)}
 
-          <Typography variant="subtitle2" gutterBottom>Scenario Selection</Typography>
-          <Select fullWidth size="small" defaultValue="Base Case" sx={{ mb: 2 }}>
-            <MenuItem value="Base Case">Base Case</MenuItem>
-            <MenuItem value="Best Case">Best Case</MenuItem>
-            <MenuItem value="Worst Case">Worst Case</MenuItem>
-          </Select>
-          <Box className="analysis-period-slider">
-            <Typography variant="body2" gutterBottom>Select Analysis Period (Years)</Typography>
-            <SidebarSlider
-                value={analysisPeriod}
-                setValue={setAnalysisPeriod}
-                min={2020}
-                max={2040}
-                step={1}
-                />
-          </Box>
+          <Typography variant="subtitle2" mt={3}>Scenario</Typography>
+          <Select
+              fullWidth
+              size="small"
+              value={scenario}
+              onChange={e => setScenario(e.target.value)}
+              sx={{ mb: 2 }}
+            >
+              <MenuItem value="Base Case">Base Case</MenuItem>
+              <MenuItem value="Best Case">Best Case</MenuItem>
+              <MenuItem value="Worst Case">Worst Case</MenuItem>
+            </Select>
+
+          <Typography variant="subtitle2" mt={3}>Analysis Period</Typography>
+          <SidebarSlider
+            value={analysisPeriod}
+            setValue={setAnalysisPeriod}
+            min={2020}
+            max={2040}
+            step={1}
+          />
         </Box>
       </Collapse>
     </Drawer>

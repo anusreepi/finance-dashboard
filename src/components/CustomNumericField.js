@@ -1,4 +1,4 @@
-// CustomNumericField.jsx
+
 import React from 'react';
 import {
   TextField,
@@ -17,8 +17,8 @@ const CustomNumericField = ({
   step = 1,
   disabled = false,
   width = '100%', 
-  height = '32px',      // ← default
-  sx,                   // allow extra styling
+  height = '32px',      
+  sx,                   
 }) => {
   const handleIncrease = () => {
     if (!disabled) onChange(typeof value === 'number' ? value + step : step);

@@ -1,20 +1,16 @@
 import React from 'react';
-import {
-  Card,
-  CardContent,
-  Typography,
-  Box,
-} from '@mui/material';
+import { Card, CardContent, Typography, Box } from '@mui/material';
 import CustomNumericField from '../CustomNumericField.js';
 
-const TrafficRevenueCard = ({ year, yearData, onUpdateField }) => {
+const InfrastructureAndCapExCard = ({ yearData, onUpdateField }) => {
   const handleUpdate = (field) => (valOrEvent) => {
     const val = typeof valOrEvent === 'number'
       ? valOrEvent
       : parseFloat(valOrEvent.target.value);
-    onUpdateField(year, field, isNaN(val) ? '' : val);
+    onUpdateField(field, isNaN(val) ? '' : val);
   };
 
+  // helper to render a pair of inputs side by side
   const row = (leftField, rightField, leftStep = 1, rightStep = 1) => (
     <Box display="flex" justifyContent="space-between" gap={2} mb={1}>
       <Box width="48%">
@@ -39,25 +35,24 @@ const TrafficRevenueCard = ({ year, yearData, onUpdateField }) => {
   return (
     <Card sx={{ mb: 3 }}>
       <CardContent sx={{ px: 3, py: 2 }}>
+        {/* Section 1 */}
         <Typography variant="h6" gutterBottom>
-          Traffic & Conversion Assumptions
+          Production Infrastructure
         </Typography>
+        {row('Land Cost($)', 'Building Cost ($)', 10000, 10000)}
+        {row('Installation Cost ($)', 'Equipment Cost ($)', 5000, 5000)}
+        
 
-        {row('Email Traffic (Monthly)', 'Email Conversion Rate', 100, 0.001)}
-        {row('Organic Search Traffic (Monthly)', 'Organic Search Conversion Rate', 100, 0.001)}
-        {row('Paid Search Traffic (Monthly)', 'Paid Search Conversion Rate', 100, 0.001)}
-        {row('Affiliates Traffic (Monthly)', 'Affiliates Conversion Rate', 100, 0.001)}
-
-        <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
-          Revenue & Cost Assumptions
+        {/* Section 2 */}
+        <Typography variant="h6" gutterBottom sx={{ mt: 3 }}>
+          Start-Up Capital
         </Typography>
-
-        {row('Average Item Value ($)', 'Average Promotion/Discount (%)', 0.01, 0.01 )}
-        {row('Items per Order','COGS as % of Revenue',10, 0.1 )}
-        {row('Average Markdown (%)', 'Churn Rate', 0.01, 0.01)}
+        {row('Commissioning Fees ($)', 'Licensing Fees ($)', 1000, 1000)}
+        {row('Dossier Acquisition ($)', 'Contingency Reserve ($)', 1000, 1000)}
+        {row('Project Running Cost ($)', 'Total Capital Requirement ($)', 1000, 1000)}
       </CardContent>
     </Card>
   );
 };
 
-export default TrafficRevenueCard;
+export default InfrastructureAndCapExCard;

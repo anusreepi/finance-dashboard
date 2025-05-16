@@ -1,4 +1,4 @@
-// components/DetailedAnalysisCard.jsx
+
 import React, { useState } from 'react';
 import {
   Card,
@@ -57,7 +57,7 @@ export default function DetailedAnalysisCard() {
   const changeNum = delta => {
     setNumAdjustments(n => {
       const next = Math.max(1, n + delta);
-      // add or trim adjustments array
+     
       setAdjustments(adjs => {
         let c = [...adjs];
         while (c.length < next) c.push({ year: 2025, variable: VARIABLE_OPTIONS[0], multiplier: 1 });
@@ -67,12 +67,11 @@ export default function DetailedAnalysisCard() {
     });
   };
 
-  // dummy what-if results
+  
   const whatIfResults = [
     { year: 2025, netRevenue: '$0', grossProfit: '$0', EBITDA: '$0', netIncome: '$0', totalOrders: 0 }
   ];
 
-  // --- Goal Seek State ---
   const [goalOpen, setGoalOpen] = useState(false);
   const [goalYear, setGoalYear] = useState(2025);
   const [targetMargin, setTargetMargin] = useState(15);

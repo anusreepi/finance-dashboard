@@ -1,13 +1,27 @@
-// src/components/cards/SummaryCard.js
+
 import React from 'react';
 import { Card, CardContent, Typography, Box, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 
-const SummaryCard = () => {
+const SummaryCard = ({ metrics }) => {
   // Dummy summary data for now
+  if (!metrics.base || !metrics.headline) return null;
+  console.log(metrics)
+  const { base, best, worst, headline } = metrics;
+
   const summaryData = [
-    { scenario: 'Base Case', netIncome: 9.2, ebitda: 9.2, irr: 53.3, npv: 15.3, payback: 0.04, gpm: 61.7, npm: 53.1 },
-    { scenario: 'Best Case', netIncome: 9.4, ebitda: 12.6, irr: 50.6, npv: 15.6, payback: 0.03, gpm: 62.5, npm: 41.7 },
-    { scenario: 'Worst Case', netIncome: 3.8, ebitda: 5.0, irr: 50.1, npv: 6.1, payback: 0.07, gpm: 55.7, npm: 32.4 }
+    {
+      scenario: "Base Case",  
+      ...metrics.base
+    },
+    {
+      scenario: "Best Case",
+      ...metrics.best
+    },
+    {
+      scenario: "Worst Case",
+      ...metrics.worst
+    },
+   
   ];
 
   return (
@@ -20,17 +34,24 @@ const SummaryCard = () => {
         <Box display="flex" justifyContent="space-between" my={2}>
           <Box>
             <Typography variant="h6">Revenue Growth</Typography>
-            <Typography variant="h4" color="success.main">20.1%</Typography>
-            <Typography color="success.main">↑ 13.3%</Typography>
+            <Typography variant="h4" color="success.main"> {headline["Revenue Growth (%)"].toFixed(1)}%</Typography>
+            <Typography color={headline["Revenue Growth Δ (%)"] >= 0 ? "success.main" : "error.main"}>
+      {headline["Revenue Growth Δ (%)"] >= 0 ? "↑" : "↓"}
+      {Math.abs(headline["Revenue Growth Δ (%)"]).toFixed(1)}%
+    </Typography>
           </Box>
           <Box>
             <Typography variant="h6">EBITDA Margin</Typography>
-            <Typography variant="h4">53.2%</Typography>
-            <Typography color="success.main">↑ 0.0%</Typography>
+            <Typography variant="h4">{headline["EBITDA Margin (%)"].toFixed(1)}%</Typography>
+            
+            <Typography color={headline["EBITDA Margin Δ (%)"] >= 0 ? "success.main" : "error.main"}>
+      {headline["EBITDA Margin Δ (%)"] >= 0 ? "↑" : "↓"}
+      {Math.abs(headline["EBITDA Margin Δ (%)"]).toFixed(1)}%
+    </Typography>
           </Box>
           <Box>
             <Typography variant="h6">Enterprise Value</Typography>
-            <Typography variant="h4">$2.2M</Typography>
+            <Typography variant="h4"> ${headline["Enterprise Value ($M)"].toFixed(2)} M</Typography>
           </Box>
         </Box>
 
@@ -46,20 +67,22 @@ const SummaryCard = () => {
               <TableCell>Payback Period (Orders)</TableCell>
               <TableCell>Gross Profit Margin (%)</TableCell>
               <TableCell>Net Profit Margin (%)</TableCell>
+              <TableCell>Net Cash Flow ($M)</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {summaryData.map((row, i) => (
-              <TableRow key={i}>
-                <TableCell>{row.scenario}</TableCell>
-                <TableCell>{row.netIncome}</TableCell>
-                <TableCell>{row.ebitda}</TableCell>
-                <TableCell>{row.irr}</TableCell>
-                <TableCell>{row.npv}</TableCell>
-                <TableCell>{row.payback}</TableCell>
-                <TableCell>{row.gpm}</TableCell>
-                <TableCell>{row.npm}</TableCell>
-              </TableRow>
+            {summaryData.map((row) => (
+              <TableRow key={row.scenario}>
+              <TableCell>{row.scenario}</TableCell>
+              <TableCell>{row["Net Income ($M)"]?.toFixed(2)}</TableCell>
+              <TableCell>{row["EBITDA ($M)"]?.toFixed(2)}</TableCell>
+              <TableCell>{row["IRR (%)"]?.toFixed(1)}</TableCell>
+              <TableCell>{row["NPV ($M)"]?.toFixed(2)}</TableCell>
+              <TableCell>{row["Payback Period (yrs)"]}</TableCell>
+              <TableCell>{row["Gross Profit Margin (%)"]?.toFixed(1)}</TableCell>
+              <TableCell>{row["Net Profit Margin (%)"]?.toFixed(1)}</TableCell>
+              <TableCell>{row["Net Cash Flow ($M)"]?.toFixed(2)}</TableCell>
+            </TableRow>
             ))}
           </TableBody>
         </Table>
